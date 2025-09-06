@@ -39,7 +39,7 @@ const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isLoading }) =>
         <Select value={selectedModel} onValueChange={setSelectedModel}>
           <SelectTrigger 
             id="model-select" 
-            className="w-full h-9 text-sm glass-card glow-hover"
+            className="w-full h-10 text-sm glass-card glow-hover"
           >
             <SelectValue placeholder="Select an AI model..." />
           </SelectTrigger>
