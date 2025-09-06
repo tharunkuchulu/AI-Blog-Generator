@@ -11,13 +11,15 @@ interface InputSectionProps {
 }
 
 const models = [
-  { id: 'deepseek-v3.1', name: 'DeepSeek V3.1' },
-  { id: 'gpt-oss-120b', name: 'OpenAI: gpt-oss-120b' },
-  { id: 'qwen3-coder-480b-a35b', name: 'Qwen3 Coder 480B A35B' },
-  { id: 'kimi-k2-0711', name: 'MoonshotAI: Kimi K2 0711' },
-  { id: 'gemma-3n-2b', name: 'Google: Gemma 3n 2B' },
-  { id: 'llama-3.3-8b-instruct', name: 'Meta: Llama 3.3 8B Instruct' },
+  { id: 'deepseek/deepseek-chat-v3.1:free', name: 'DeepSeek' },
+  { id: 'openai/gpt-oss-120b:free', name: 'OpenAI' },
+  { id: 'qwen/qwen3-coder-480b-a35b:free', name: 'Qwen' },
+  { id: 'moonshot/kimi-k2-0711:free', name: 'MoonshotAI' },
+  { id: 'google/gemma-3n-2b:free', name: 'Google Gemma' },
+  { id: 'meta-llama/llama-3.3-8b-instruct:free', name: 'Meta Llama' },
 ];
+
+
 
 const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isLoading }) => {
   const [prompt, setPrompt] = useState('');

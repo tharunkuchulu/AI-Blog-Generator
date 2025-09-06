@@ -6,7 +6,7 @@ app = FastAPI(title="AI Blog Generator API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],  # in production: replace with ["http://localhost:8080", "https://your-frontend-domain.com"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
