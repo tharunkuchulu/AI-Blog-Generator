@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Light Theme - Soft grays with indigo→violet gradient */
+    --background: 210 11% 97.3%; /* #f9fafb */
+    --foreground: 220 26% 14%; /* #111827 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 26% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 26% 14%;
+
+    /* Indigo primary color */
+    --primary: 239 84% 67%; /* #6366f1 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 220 26% 14%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 239 84% 67%; /* matches primary */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 239 84% 67%;
+
+    /* Custom gradient colors */
+    --gradient-start: 239 84% 67%; /* #6366f1 indigo */
+    --gradient-end: 258 90% 66%; /* #8b5cf6 violet */
+
+    /* Glass morphism */
+    --glass-bg: 0 0% 100% / 0.8;
+    --glass-border: 214.3 31.8% 91.4% / 0.2;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark Theme - Deep navy with cyan→blue gradient */
+    --background: 222 47% 11%; /* #0f172a */
+    --foreground: 210 17% 82%; /* #e5e7eb */
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 17% 82%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 17% 82%;
+
+    /* Cyan primary color */
+    --primary: 188 100% 50%; /* #00c6ff */
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 17% 82%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 188 100% 50%; /* matches primary */
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 17% 82%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 188 100% 50%;
+
+    /* Custom gradient colors for dark mode */
+    --gradient-start: 188 100% 50%; /* #00c6ff cyan */
+    --gradient-end: 214 100% 50%; /* #0072ff blue */
+
+    /* Dark glass morphism */
+    --glass-bg: 222 47% 11% / 0.8;
+    --glass-border: 188 100% 50% / 0.2;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+
+  /* Custom gradient classes */
+  .gradient-text {
+    @apply bg-gradient-to-r from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] bg-clip-text text-transparent;
+  }
+
+  .gradient-bg {
+    @apply bg-gradient-to-r from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))];
+  }
+
+  .glass-card {
+    @apply backdrop-blur-lg bg-[hsl(var(--glass-bg))] border border-[hsl(var(--glass-border))] shadow-xl;
+  }
+
+  /* Glow effects */
+  .glow-hover:hover {
+    @apply shadow-[0_0_20px_hsl(var(--gradient-start)/0.5)] transition-all duration-300;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes pulse-glow {
+    from {
+      box-shadow: 0 0 20px hsl(var(--gradient-start) / 0.5);
+    }
+    to {
+      box-shadow: 0 0 30px hsl(var(--gradient-start) / 0.8), 0 0 40px hsl(var(--gradient-end) / 0.3);
+    }
+  }
+
+  /* Loading animation */
+  .loading-dots {
+    animation: loading-dots 1.5s ease-in-out infinite;
+  }
+
+  @keyframes loading-dots {
+    0%, 20% { opacity: 0.2; }
+    50% { opacity: 1; }
+    80%, 100% { opacity: 0.2; }
+  }
+}

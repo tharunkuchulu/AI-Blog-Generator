@@ -1,0 +1,95 @@
+import React, { useState } from 'react';
+import { useTheme } from '@/hooks/useTheme';
+import ThemeToggle from '@/components/ThemeToggle';
+import Header from '@/components/Header';
+import InputSection from '@/components/InputSection';
+import LoadingState from '@/components/LoadingState';
+import BlogDisplay from '@/components/BlogDisplay';
+import Footer from '@/components/Footer';
+
+const handleGenerate = async (prompt: string, model: string) => {
+  setIsLoading(true);
+  setBlogContent('');
+  setSelectedModel(model);
+  setLastPrompt(prompt);
+
+  try {
+    // Call your FastAPI backend
+    const response = await fetch("http://localhost:8000/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt, model }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to generate blog");
+    }
+
+    const data = await response.json();
+    setBlogContent(data.blog); // assuming backend returns { blog: "..." }
+  } catch (error) {
+    console.error("Error generating blog:", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+const Index = () => {
+  const { isDark, toggleTheme } = useTheme();
+  const [isLoading, setIsLoading] = useState(false);
+  const [blogContent, setBlogContent] = useState('');
+  const [selectedModel, setSelectedModel] = useState('');
+  const [lastPrompt, setLastPrompt] = useState('');
+
+  const handleGenerate = async (prompt: string, model: string) => {
+    setIsLoading(true);
+    setBlogContent('');
+    setSelectedModel(model);
+    setLastPrompt(prompt);
+    
+    try {
+      const content = await mockGenerateBlog(prompt, model);
+      setBlogContent(content);
+    } catch (error) {
+      console.error('Error generating blog:', error);
+      // In a real app, you'd show an error toast here
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRegenerate = () => {
+    if (lastPrompt && selectedModel) {
+      handleGenerate(lastPrompt, selectedModel);
+    }
+  };
+
+  return (
+    <div className="min-h-screen transition-colors duration-300">
+      <ThemeToggle isDark={isDark} toggle={toggleTheme} />
+      
+      <div className="container mx-auto px-4 py-12">
+        <Header />
+        
+        <InputSection onGenerate={handleGenerate} isLoading={isLoading} />
+        
+        {isLoading && <LoadingState />}
+        
+        {blogContent && !isLoading && (
+          <BlogDisplay 
+            content={blogContent} 
+            title="AI Generated Blog"
+            onRegenerate={handleRegenerate}
+          />
+        )}
+        
+        <Footer />
+      </div>
+    </div>
+  );
+};
+
+export default Index;
