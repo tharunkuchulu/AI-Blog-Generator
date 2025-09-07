@@ -29,12 +29,20 @@ const Index = () => {
         body: JSON.stringify({ prompt, model }),
       });
 
-      if (!response.ok) {
+      if (!response.ok || !response.body) {
         throw new Error("Failed to generate blog");
       }
 
-      const data = await response.json();
-      setBlogContent(data.blog);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        if (readerDone) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setBlogContent(prev => prev + chunk);
+      }
     } catch (error) {
       console.error("Error generating blog:", error);
     } finally {

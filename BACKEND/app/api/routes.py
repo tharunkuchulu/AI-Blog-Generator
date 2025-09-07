@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 import httpx
 from app.core.config import settings
 import re
+import asyncio
 
 router = APIRouter()
 
@@ -10,7 +12,6 @@ class GenerateRequest(BaseModel):
     prompt: str
     model: str
 
-# Exact OpenRouter model names
 ALLOWED_MODELS = [
     "deepseek/deepseek-chat-v3.1:free",
     "openai/gpt-oss-120b:free",
@@ -20,23 +21,20 @@ ALLOWED_MODELS = [
     "meta-llama/llama-3.3-8b-instruct:free",
 ]
 
-def count_words(text: str) -> int:
-    return len(text.split())
-
 def clean_blog_text(text: str) -> str:
-    # Remove raw markdown headings like '# ' at the start of lines
     text = re.sub(r"^#+\s*", "", text, flags=re.MULTILINE)
-    # Remove leading/trailing spaces
     text = text.strip()
-    # Remove AI intros like "Of course," "As a world-class blogger,"
     text = re.sub(r"^(Of course|As a world-class blogger)[,]*\s*", "", text, flags=re.IGNORECASE)
     return text
+
+def count_words(text: str) -> int:
+    return len(text.split())
 
 @router.post("/generate")
 async def generate_blog(req: GenerateRequest):
     if req.model not in ALLOWED_MODELS:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail=f"Model '{req.model}' is not supported. Use one of: {', '.join(ALLOWED_MODELS)}"
         )
 
@@ -59,40 +57,41 @@ Guidelines:
         "messages": [
             {"role": "system", "content": "You are a professional AI blog writer."},
             {"role": "user", "content": base_prompt}
-        ]
+        ],
+        "stream": True
     }
 
-    retries = 0
-    blog_content = ""
-    word_count = 0
-
-    try:
-        while retries < 3:
-            async with httpx.AsyncClient(timeout=120.0) as client:
-                response = await client.post(
+    async def event_generator():
+        blog_content = ""
+        try:
+            async with httpx.AsyncClient(timeout=None) as client:
+                async with client.stream(
+                    "POST",
                     "https://openrouter.ai/api/v1/chat/completions",
                     headers={"Authorization": f"Bearer {settings.OPENROUTER_API_KEY}"},
                     json=payload
-                )
-                response.raise_for_status()
-                data = response.json()
+                ) as response:
+                    async for line in response.aiter_lines():
+                        if line.strip().startswith("data: "):
+                            chunk = line.removeprefix("data: ").strip()
+                            if chunk == "[DONE]":
+                                break
+                            try:
+                                delta = httpx.Response(200, content=chunk).json()
+                            except Exception:
+                                continue
+                            if "choices" in delta and delta["choices"]:
+                                delta_content = delta["choices"][0]["delta"].get("content", "")
+                                if delta_content:
+                                    blog_content += delta_content
+                                    yield delta_content  # stream chunk to frontend
 
-            blog_content = data["choices"][0]["message"]["content"].strip()
-            blog_content = clean_blog_text(blog_content)
-            word_count = count_words(blog_content)
+            # after streaming, clean and count words
+            cleaned = clean_blog_text(blog_content)
+            wc = count_words(cleaned)
+            yield f"\n\n\n---\n\n[Word Count: {wc}]"
 
-            if 900 <= word_count <= 1100:
-                break  # blog is within desired word count
-            retries += 1
+        except Exception as e:
+            yield f"\n\n[Error: {str(e)}]"
 
-        if not blog_content:
-            raise HTTPException(status_code=500, detail="Failed to generate blog after multiple attempts.")
-
-    except httpx.RequestError as e:
-        raise HTTPException(status_code=500, detail=f"Request error: {str(e)}")
-    except httpx.HTTPStatusError as e:
-        raise HTTPException(status_code=500, detail=f"OpenRouter API returned an error: {str(e)}")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
-
-    return {"blog": blog_content, "word_count": word_count}
+    return StreamingResponse(event_generator(), media_type="text/plain")
