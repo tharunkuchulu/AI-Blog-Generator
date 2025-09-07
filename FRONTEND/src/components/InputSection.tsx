@@ -11,12 +11,12 @@ interface InputSectionProps {
 }
 
 const models = [
-  { id: 'deepseek/deepseek-chat-v3.1:free', name: 'DeepSeek' },
-  { id: 'openai/gpt-oss-120b:free', name: 'OpenAI' },
-  { id: 'qwen/qwen3-coder-480b-a35b:free', name: 'Qwen' },
-  { id: 'moonshot/kimi-k2-0711:free', name: 'MoonshotAI' },
-  { id: 'google/gemma-3n-2b:free', name: 'Google Gemma' },
-  { id: 'meta-llama/llama-3.3-8b-instruct:free', name: 'Meta Llama' },
+{ id: 'deepseek/deepseek-chat-v3.1:free', name: 'DeepSeek' },
+{ id: 'openai/gpt-oss-120b:free', name: 'OpenAI' },
+{ id: 'qwen/qwen3-coder-480b-a35b:free', name: 'Qwen' },
+{ id: 'moonshot/kimi-k2-0711:free', name: 'MoonshotAI' },
+{ id: 'google/gemma-3n-2b:free', name: 'Google Gemma' },
+{ id: 'meta-llama/llama-3.3-8b-instruct:free', name: 'Meta Llama' },
 ];
 
 
