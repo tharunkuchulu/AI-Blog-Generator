@@ -15,11 +15,16 @@ class GenerateRequest(BaseModel):
 ALLOWED_MODELS = [
     "deepseek/deepseek-chat-v3.1:free",
     "openai/gpt-oss-120b:free",
+    "openai/gpt-oss-20b:free",          
     "qwen/qwen3-coder:free",
     "moonshotai/kimi-k2:free",
     "google/gemma-3n-e2b-it:free",
     "meta-llama/llama-3.3-8b-instruct:free",
+    "zhipu/glm-4.5-air:free",          
+    "veniceai/venice-uncensored:free"  
 ]
+
+
 
 def clean_blog_text(text: str) -> str:
     text = re.sub(r"^#+\s*", "", text, flags=re.MULTILINE)
