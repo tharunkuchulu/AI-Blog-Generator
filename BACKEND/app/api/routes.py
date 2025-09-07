@@ -14,16 +14,12 @@ class GenerateRequest(BaseModel):
 
 ALLOWED_MODELS = [
     "deepseek/deepseek-chat-v3.1:free",
-    "openai/gpt-oss-120b:free",
-    "openai/gpt-oss-20b:free",          
-    "qwen/qwen3-coder:free",
+    "openai/gpt-oss-20b:free",
     "moonshotai/kimi-k2:free",
-    "google/gemma-3n-e2b-it:free",
-    "meta-llama/llama-3.3-8b-instruct:free",
-    "zhipu/glm-4.5-air:free",          
-    "veniceai/venice-uncensored:free"  
+    "qwen/qwen3-coder:free",                      # optional if you want Qwen
+    "mistral/mistral-small-24b-instruct-2501:free",
+    "google/gemma-3n-e4b-it:free",
 ]
-
 
 
 def clean_blog_text(text: str) -> str:
@@ -93,6 +89,9 @@ Guidelines:
 
             # after streaming, clean and count words
             cleaned = clean_blog_text(blog_content)
+            if not cleaned.strip():
+                yield "\n\n[Error: OpenRouter returned empty content for this model. Try a different model.]"
+                return
             wc = count_words(cleaned)
             yield f"\n\n\n---\n\n[Word Count: {wc}]"
 

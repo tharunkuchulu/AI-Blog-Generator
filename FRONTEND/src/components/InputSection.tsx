@@ -11,14 +11,13 @@ interface InputSectionProps {
 }
 
 const models = [
-  { id: "openai/gpt-oss-20b:free", name: "OpenAI (gpt-oss-20b)" },
-  { id: "zhipu/glm-4.5-air:free", name: "GLM 4.5 Air" },
-  { id: "veniceai/venice-uncensored:free", name: "Venice Uncensored" },
-  { id: "moonshotai/kimi-k2:free", name: "MoonshotAI Kimi K2" },
-  { id: "deepseek/deepseek-chat-v3.1:free", name: "DeepSeek V3.1" }
+  { id: 'deepseek/deepseek-chat-v3.1:free', name: 'DeepSeek' },
+  { id: 'openai/gpt-oss-20b:free', name: 'OpenAI (gpt-oss-20b)' },
+  { id: 'moonshotai/kimi-k2:free', name: 'MoonshotAI (Kimi K2)' },
+  { id: 'qwen/qwen3-coder:free', name: 'Qwen' }, // optional
+  { id: 'mistral/mistral-small-24b-instruct-2501:free', name: 'Mistral Small' },
+  { id: 'google/gemma-3n-e4b-it:free', name: 'Google Gemma 3n' },
 ];
-
-
 
 
 const InputSection: React.FC<InputSectionProps> = ({ onGenerate, isLoading }) => {
