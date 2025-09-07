@@ -125,8 +125,14 @@ All colors MUST be HSL.
 
   /* Custom gradient classes */
   .gradient-text {
-    @apply bg-gradient-to-r from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] bg-clip-text text-transparent;
-  }
+  @apply bg-gradient-to-r from-[hsl(var(--gradient-start))] 
+         to-[hsl(var(--gradient-end))] 
+         text-transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  padding-bottom: 0.2em; /* prevents descender clipping */
+}
+
 
   .gradient-bg {
     @apply bg-gradient-to-r from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))];
